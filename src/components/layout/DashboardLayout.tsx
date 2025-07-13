@@ -26,7 +26,8 @@ export const DashboardLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
+      {/* Sidebar */}
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -34,13 +35,14 @@ export const DashboardLayout: React.FC = () => {
         onTabChange={handleTabChange}
       />
 
-      <div className="lg:pl-64">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col ">
         {/* Top Header */}
-        <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
           <div className="flex items-center justify-between px-4 py-4">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               <Menu className="h-5 w-5 text-gray-500" />
             </button>
@@ -56,7 +58,7 @@ export const DashboardLayout: React.FC = () => {
         </header>
 
         {/* Main Content */}
-        <main className="p-6">
+        <main className="flex-1 p-6 overflow-y-auto">
           <Suspense fallback={<LoadingSpinner />}>{renderContent()}</Suspense>
         </main>
       </div>

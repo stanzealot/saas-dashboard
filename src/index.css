@@ -4,21 +4,57 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --color-primary: #db353a;
-  --color-white: #ffffff;
-  --color-black: #000000;
-  --color-light: #820c10;
-  --color-dark: #8c8f97;
-  --color-primary-link: #1f5a57;
-  --color-dark-link: #7f8082;
-  --color-link: #7f8082;
-  --color-gray-4: #99a1aa;
+@layer base {
+  html {
+    @apply h-full;
+  }
 
-  --transition: all 0.3s ease-in-out;
+  body {
+    @apply h-full font-sans antialiased;
+    @apply bg-gray-50 dark:bg-gray-900;
+    @apply text-gray-900 dark:text-gray-100;
+  }
+
+  #root {
+    @apply h-full;
+  }
 }
 
-a {
-  display: inline-block;
-  text-decoration: none;
+@layer components {
+  /* Custom scrollbar styles */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+  }
+
+  /* Loading spinner animation */
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+/* Ensure dark mode transitions are smooth */
+* {
+  transition: background-color 0.2s ease, color 0.2s ease,
+    border-color 0.2s ease;
 }

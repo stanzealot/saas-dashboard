@@ -1,12 +1,17 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+import React from 'react';
+import { ErrorBoundary } from '@/components/common';
+import { DashboardLayout } from '@/components/layout';
+import { LoginPage } from '@/pages';
+import { useAuth } from '@/hooks';
 
-function App() {
-  const [count, setCount] = useState(0);
+const App: React.FC = () => {
+  const { isAuthenticated } = useAuth();
 
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
-}
+  return (
+    <ErrorBoundary>
+      {isAuthenticated ? <DashboardLayout /> : <LoginPage />}
+    </ErrorBoundary>
+  );
+};
 
 export default App;
