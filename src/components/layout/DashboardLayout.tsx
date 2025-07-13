@@ -1,42 +1,19 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Menu } from 'lucide-react';
-import { LoadingSpinner } from '@/components/common';
-import { Dashboard } from '@/components/dashboard';
-import { Analytics, Settings } from '@/pages';
 import { Sidebar } from './Sidebar';
 
 export const DashboardLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('dashboard');
-
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-    setSidebarOpen(false); // Close sidebar on mobile when tab changes
-  };
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'analytics':
-        return <Analytics />;
-      case 'settings':
-        return <Settings />;
-      default:
-        return <Dashboard />;
-    }
-  };
+  const location = useLocation();
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
       {/* Sidebar */}
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-      />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col ">
+      <div className="flex-1 flex flex-col">
         {/* Top Header */}
         <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
           <div className="flex items-center justify-between px-4 py-4">
@@ -59,7 +36,7 @@ export const DashboardLayout: React.FC = () => {
 
         {/* Main Content */}
         <main className="flex-1 p-6 overflow-y-auto">
-          <Suspense fallback={<LoadingSpinner />}>{renderContent()}</Suspense>
+          <Outlet />
         </main>
       </div>
     </div>

@@ -24,4 +24,6 @@ export interface NavigationItem {
   id: string;
   name: string;
   icon: React.ComponentType<{ className?: string }>;
+  href?: string;
+  count?: number;
 }

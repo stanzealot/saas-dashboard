@@ -1,35 +1,20 @@
 import React from 'react';
-import {
-  BarChart3,
-  X,
-  Home,
-  Settings,
-  BarChart,
-  ChevronRight,
-  LogOut,
-} from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+import { BarChart3, X, Home, Settings, BarChart, LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks';
-import { NavigationItem } from '@/types';
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  activeTab: string;
-  onTabChange: (tab: string) => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({
-  isOpen,
-  onClose,
-  activeTab,
-  onTabChange,
-}) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const { user, logout } = useAuth();
 
-  const navigation: NavigationItem[] = [
-    { id: 'dashboard', name: 'Dashboard', icon: Home },
-    { id: 'analytics', name: 'Analytics', icon: BarChart },
-    { id: 'settings', name: 'Settings', icon: Settings },
+  const navigation = [
+    { name: 'Dashboard', href: '/dashboard', icon: Home },
+    { name: 'Analytics', href: '/analytics', icon: BarChart },
+    { name: 'Settings', href: '/settings', icon: Settings },
   ];
 
   return (
@@ -76,21 +61,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {navigation.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <li key={item.id}>
-                    <button
-                      onClick={() => onTabChange(item.id)}
-                      className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                        activeTab === item.id
-                          ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-r-2 border-blue-600'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-                      }`}
+                  <li key={item.name}>
+                    <NavLink
+                      to={item.href}
+                      onClick={onClose}
+                      className={({ isActive }) =>
+                        `w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${
+                          isActive
+                            ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-r-2 border-blue-600'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                        }`
+                      }
                     >
                       <Icon className="h-5 w-5" />
                       <span className="font-medium">{item.name}</span>
-                      {activeTab === item.id && (
-                        <ChevronRight className="h-4 w-4 ml-auto" />
-                      )}
-                    </button>
+                    </NavLink>
                   </li>
                 );
               })}
@@ -101,7 +86,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="p-4 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-center space-x-3 mb-3">
               <img
-                src={user?.avatar}
+                src={
+                  user?.avatar ||
+                  `https://ui-avatars.com/api/?name=${user?.name}&background=3B82F6&color=ffffff`
+                }
                 alt={user?.name}
                 className="h-10 w-10 rounded-full"
               />
