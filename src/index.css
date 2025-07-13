@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #db353a;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-light: #820c10;
+  --color-dark: #8c8f97;
+  --color-primary-link: #1f5a57;
+  --color-dark-link: #7f8082;
+  --color-link: #7f8082;
+  --color-gray-4: #99a1aa;
+
+  --transition: all 0.3s ease-in-out;
+}
+
+a {
+  display: inline-block;
+  text-decoration: none;
+}
