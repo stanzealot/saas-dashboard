@@ -6,7 +6,6 @@ import { DashboardLayout } from '@/components/layout';
 import { LoadingSpinner } from '@/components/common';
 import { useAuth } from '@/hooks';
 
-// Lazy load components for code splitting
 const LoginPage = React.lazy(() =>
   import('@/pages/LoginPage').then((module) => ({ default: module.LoginPage }))
 );
@@ -22,7 +21,6 @@ const Settings = React.lazy(() =>
   import('@/pages/Settings').then((module) => ({ default: module.Settings }))
 );
 
-// Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -30,7 +28,6 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
-// Public Route Component
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuth();
   return !isAuthenticated ? (

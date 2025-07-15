@@ -1,4 +1,3 @@
-// src/pages/Analytics.tsx
 import React, { useState, useEffect } from 'react';
 import {
   BarChart3,
