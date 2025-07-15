@@ -6,11 +6,28 @@ import { Sidebar } from './Sidebar';
 export const DashboardLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+<<<<<<< Updated upstream
+=======
+
+  // Get current active tab from URL
+  const getActiveTab = () => {
+    const path = location.pathname.split('/')[1];
+    return path || 'dashboard';
+  };
+>>>>>>> Stashed changes
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
       {/* Sidebar */}
+<<<<<<< Updated upstream
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+=======
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        activeTab={getActiveTab()}
+      />
+>>>>>>> Stashed changes
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col">

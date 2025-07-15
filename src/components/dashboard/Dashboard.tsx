@@ -6,8 +6,6 @@ import {
   Bell,
   Activity,
   AlertCircle,
-  TrendingUp,
-  Eye,
 } from 'lucide-react';
 import {
   LineChart,
@@ -19,10 +17,8 @@ import {
   ResponsiveContainer,
   BarChart as RechartsBarChart,
   Bar,
-  PieChart,
-  Pie,
-  Cell,
 } from 'recharts';
+import { DashboardMetric, ChartData } from '@/types';
 import { LoadingSpinner } from '@/components/common';
 import { MetricCard } from './MetricCard';
 
@@ -30,58 +26,28 @@ import { MetricCard } from './MetricCard';
 const apiService = {
   async fetchPosts() {
     const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    if (!response.ok) throw new Error('Failed to fetch posts');
+    if (!response.ok) {
+      throw new Error('Failed to fetch posts');
+    }
     return response.json();
   },
 
   async fetchUsers() {
     const response = await fetch('https://jsonplaceholder.typicode.com/users');
-    if (!response.ok) throw new Error('Failed to fetch users');
+    if (!response.ok) {
+      throw new Error('Failed to fetch users');
+    }
     return response.json();
-  },
-
-  async fetchComments() {
-    const response = await fetch(
-      'https://jsonplaceholder.typicode.com/comments'
-    );
-    if (!response.ok) throw new Error('Failed to fetch comments');
-    return response.json();
-  },
-
-  async fetchWeatherData() {
-    // Using a free weather API for additional real data
-    const response = await fetch(
-      'https://api.openweathermap.org/data/2.5/weather?q=London&appid=demo'
-    );
-    return response.ok ? response.json() : null;
   },
 };
 
-interface DashboardMetric {
-  id: string;
-  title: string;
-  value: string;
-  change: string;
-  trend: 'up' | 'down';
-  icon: React.ReactNode;
-  color: string;
-}
-
-interface ChartData {
-  name: string;
-  value: number;
-}
-
-const Dashboard: React.FC = () => {
+export const Dashboard: React.FC = () => {
   const [metrics, setMetrics] = useState<DashboardMetric[]>([]);
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [barData, setBarData] = useState<ChartData[]>([]);
-  const [pieData, setPieData] = useState<ChartData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [apiData, setApiData] = useState<any[]>([]);
-
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -89,28 +55,23 @@ const Dashboard: React.FC = () => {
       setError(null);
 
       try {
-        // Fetch real data from multiple APIs
-        const [postsData, usersData, commentsData] = await Promise.all([
+        // Real API calls
+        const [postsData, usersData] = await Promise.all([
           apiService.fetchPosts(),
           apiService.fetchUsers(),
-          apiService.fetchComments(),
         ]);
 
         setApiData(postsData);
 
         // Process real data into metrics
-        const totalEngagement = commentsData.length;
-        const avgPostsPerUser = postsData.length / usersData.length;
-        const avgCommentsPerPost = commentsData.length / postsData.length;
-
-        const processedMetrics: DashboardMetric[] = [
+        const mockMetrics: DashboardMetric[] = [
           {
             id: '1',
             title: 'Total Posts',
             value: postsData.length.toString(),
             change: '+12.5%',
             trend: 'up',
-            icon: <Eye className="h-5 w-5 text-white" />,
+            icon: <Users className="h-5 w-5 text-white" />,
             color: 'bg-blue-500',
           },
           {
@@ -119,63 +80,39 @@ const Dashboard: React.FC = () => {
             value: usersData.length.toString(),
             change: '+8.2%',
             trend: 'up',
-            icon: <Users className="h-5 w-5 text-white" />,
+            icon: <DollarSign className="h-5 w-5 text-white" />,
             color: 'bg-green-500',
           },
           {
             id: '3',
-            title: 'Engagement Rate',
-            value: `${avgCommentsPerPost.toFixed(1)}%`,
+            title: 'Avg Posts/User',
+            value: (postsData.length / usersData.length).toFixed(1),
             change: '-0.8%',
             trend: 'down',
-            icon: <TrendingUp className="h-5 w-5 text-white" />,
+            icon: <UserMinus className="h-5 w-5 text-white" />,
             color: 'bg-red-500',
-          },
-          {
-            id: '4',
-            title: 'Total Revenue',
-            value: '$24.5K',
-            change: '+15.3%',
-            trend: 'up',
-            icon: <DollarSign className="h-5 w-5 text-white" />,
-            color: 'bg-purple-500',
           },
         ];
 
         // Generate chart data based on real data
         const userPostCounts = usersData.map((user: any) => ({
-          name: user.name.split(' ')[0],
+          name: user.name.split(' ')[0], // First name only
           value: postsData.filter((post: any) => post.userId === user.id)
             .length,
         }));
 
-        // Monthly trend data (simulated based on real data)
-        const monthlyData: ChartData[] = [
-          { name: 'Jan', value: Math.floor(postsData.length * 0.8) },
-          { name: 'Feb', value: Math.floor(postsData.length * 0.9) },
-          { name: 'Mar', value: Math.floor(postsData.length * 0.85) },
-          { name: 'Apr', value: Math.floor(postsData.length * 1.1) },
-          { name: 'May', value: Math.floor(postsData.length * 0.95) },
-          { name: 'Jun', value: postsData.length },
+        const mockChartData: ChartData[] = [
+          { name: 'Jan', value: 400 },
+          { name: 'Feb', value: 300 },
+          { name: 'Mar', value: 600 },
+          { name: 'Apr', value: 800 },
+          { name: 'May', value: 700 },
+          { name: 'Jun', value: 900 },
         ];
 
-        // Category distribution for pie chart
-        const categories = [
-          'Technology',
-          'Business',
-          'Design',
-          'Marketing',
-          'Other',
-        ];
-        const categoryData = categories.map((cat, index) => ({
-          name: cat,
-          value: Math.floor(postsData.length / categories.length) + index * 2,
-        }));
-
-        setMetrics(processedMetrics);
-        setChartData(monthlyData);
-        setBarData(userPostCounts.slice(0, 8));
-        setPieData(categoryData);
+        setMetrics(mockMetrics);
+        setChartData(mockChartData);
+        setBarData(userPostCounts.slice(0, 6)); // Show first 6 users
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
@@ -189,10 +126,8 @@ const Dashboard: React.FC = () => {
   const retryFetch = () => {
     setError(null);
     setIsLoading(true);
-    // Re-trigger useEffect by changing a dependency
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
+    // Re-trigger useEffect
+    window.location.reload();
   };
 
   if (isLoading) {
@@ -235,7 +170,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* API Data Status */}
+      {/* API Data Info */}
       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
         <div className="flex items-center space-x-2">
           <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
@@ -246,22 +181,21 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {metrics.map((metric) => (
           <MetricCard key={metric.id} metric={metric} />
         ))}
       </div>
 
-      {/* Charts Grid */}
+      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Line Chart */}
         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Monthly Trend
+            Revenue Trend
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+              <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
@@ -270,20 +204,18 @@ const Dashboard: React.FC = () => {
                 dataKey="value"
                 stroke="#3B82F6"
                 strokeWidth={2}
-                dot={{ fill: '#3B82F6' }}
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Bar Chart */}
         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Posts by User (Live Data)
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <RechartsBarChart data={barData}>
-              <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+              <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
@@ -291,69 +223,36 @@ const Dashboard: React.FC = () => {
             </RechartsBarChart>
           </ResponsiveContainer>
         </div>
+      </div>
 
-        {/* Pie Chart */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Category Distribution
-          </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={pieData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) =>
-                  `${name} ${percent ? (percent * 100).toFixed(0) : 0}%`
-                }
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {pieData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Recent Activity */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Recent Activity
-          </h3>
-          <div className="space-y-3">
-            {apiData.slice(0, 5).map((post: any) => (
-              <div
-                key={post.id}
-                className="flex items-start space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-              >
-                <div className="flex-shrink-0 w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                    {post.id}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                    {post.title}
-                  </h4>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    User ID: {post.userId} • {new Date().toLocaleDateString()}
-                  </p>
-                </div>
+      {/* Recent API Data */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Recent Posts (Live API Data)
+        </h3>
+        <div className="space-y-3">
+          {apiData.slice(0, 5).map((post: any) => (
+            <div
+              key={post.id}
+              className="flex items-start space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+            >
+              <div className="flex-shrink-0 w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                  {post.id}
+                </span>
               </div>
-            ))}
-          </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                  {post.title}
+                </h4>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  User ID: {post.userId}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
 };
-
-export default Dashboard;
