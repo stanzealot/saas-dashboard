@@ -49,7 +49,6 @@ interface ChartData {
 export const Analytics: React.FC = () => {
   const [metrics, setMetrics] = useState<AnalyticsMetric[]>([]);
   const [timeSeriesData, setTimeSeriesData] = useState<ChartData[]>([]);
-  const [categoryData, setCategoryData] = useState<ChartData[]>([]);
   const [userActivityData, setUserActivityData] = useState<ChartData[]>([]);
   const [distributionData, setDistributionData] = useState<ChartData[]>([]);
   const [scatterData, setScatterData] = useState<ChartData[]>([]);
@@ -73,7 +72,7 @@ export const Analytics: React.FC = () => {
 
     try {
       // Fetch data from multiple real APIs
-      const [jsonData, cryptoData, quotesData] = await Promise.all([
+      const [jsonData] = await Promise.all([
         analyticsAPI.fetchJSONPlaceholderAnalytics(),
         analyticsAPI.fetchCryptoData(),
         analyticsAPI.fetchQuoteData(),
@@ -153,7 +152,7 @@ export const Analytics: React.FC = () => {
         'Marketing',
         'Content',
       ];
-      const categoryDistribution = categories.map((cat, index) => ({
+      const categoryDistribution = categories.map((cat) => ({
         name: cat,
         value: Math.floor(Math.random() * 50) + 10,
       }));
@@ -387,7 +386,7 @@ export const Analytics: React.FC = () => {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {distributionData.map((entry, index) => (
+                {distributionData.map((_, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}

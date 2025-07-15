@@ -13,7 +13,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return saved ? JSON.parse(saved) : null;
   });
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string) => {
     // Mock authentication
     const mockUser: User = {
       id: '1',

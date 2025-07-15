@@ -6,8 +6,6 @@ import {
   Bell,
   Activity,
   AlertCircle,
-  TrendingUp,
-  Eye,
 } from 'lucide-react';
 import {
   LineChart,
