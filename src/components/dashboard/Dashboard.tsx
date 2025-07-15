@@ -22,6 +22,7 @@ import {
 } from 'recharts';
 import { LoadingSpinner } from '@/components/common';
 import { MetricCard } from './MetricCard';
+import { fetchPosts } from '@/services/api';
 
 interface DashboardMetric {
   id: string;
@@ -46,13 +47,6 @@ const Dashboard: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [apiData, setApiData] = useState<any[]>([]);
 
-  // API Service for recent activities (JSONPlaceholder)
-  const fetchPosts = async () => {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    if (!response.ok) throw new Error('Failed to fetch posts');
-    return response.json();
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -63,7 +57,6 @@ const Dashboard: React.FC = () => {
         const postsData = await fetchPosts();
         setApiData(postsData);
 
-        // Mock metrics data (similar to previous dashboard)
         const mockMetrics: DashboardMetric[] = [
           {
             id: '1',
@@ -135,7 +128,7 @@ const Dashboard: React.FC = () => {
   const retryFetch = () => {
     setError(null);
     setIsLoading(true);
-    // Re-trigger useEffect by changing a dependency
+
     setTimeout(() => {
       window.location.reload();
     }, 100);
